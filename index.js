@@ -5,20 +5,74 @@ const { v4: uuidv4 } = require('uuid');  // Use uuid to generate unique IDs
 const app = express();
 const port = 5000;
 
-const allowedOrigins = ['https://astonishing-dolphin-daa5ea.netlify.app', 'http://localhost:5173'];
 
-const corsOptions = {
-    origin: function (origin, callback) {
-        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    optionsSuccessStatus: 200
-};
+const allowedOriginsDynamic = [
+    'https://mioc-client.onrender.com',
+    'https://mioc.netlify.app',
+    "https://main--mioc.netlify.app",
+    'https://mioc.org.om',
+    "https://astonishing-dolphin-daa5ea.netlify.app",
+];
 
-app.use(cors(corsOptions)); app.use(express.json());
+// else
+const allowedOriginsStatic = [
+    'http://localhost:5000',
+    'http://localhost:5173',
+    'https://mioc-website-client.vercel.app',
+    'https://mti.bankmuscat.com:6443/',
+    'https://smartpaytrns.bankmuscat.com/',
+    'https://spayuattrns.bmtest.om',
+];
+
+app.use((req, res, next) => {
+    const origin = req.headers.origin;
+
+    // Check if the origin is from Render or Netlify (dynamic origins)
+    if (allowedOriginsDynamic.includes(origin)) {
+        cors({
+            origin: function (origin, callback) {
+                if (!origin) return callback(null, true);
+                if (allowedOriginsDynamic.indexOf(origin) !== -1) {
+                    callback(null, true);
+                } else {
+                    callback(new Error('Not allowed by CORS'));
+                }
+            },
+            methods: ['GET', 'PUT', 'POST', 'DELETE'],
+            allowedHeaders: ['Content-Type'],
+            credentials: true // Allow cookies to be sent
+        })(req, res, next);
+    } else {
+        // Apply the static CORS config for other origins
+        cors({
+            origin: allowedOriginsStatic,
+            methods: ['GET', 'PUT', 'POST', 'DELETE'],
+            allowedHeaders: ['Content-Type'],
+            credentials: true // Allow cookies to be sent
+        })(req, res, next);
+    }
+});
+
+
+// const corsOptions = {
+//     origin: 'https://astonishing-dolphin-daa5ea.netlify.app',  // Allow only this origin
+//     optionsSuccessStatus: 200
+// };
+
+// const allowedOrigins = ['https://astonishing-dolphin-daa5ea.netlify.app', 'http://localhost:5173'];
+
+// const corsOptions = {
+//     origin: function (origin, callback) {
+//         if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+//             callback(null, true);
+//         } else {
+//             callback(new Error('Not allowed by CORS'));
+//         }
+//     },
+//     optionsSuccessStatus: 200
+// };
+
+// app.use(cors(corsOptions)); app.use(express.json());
 
 // Mock Data
 let employees = [
