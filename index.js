@@ -11,7 +11,6 @@ const allowedOriginsDynamic = [
     'https://mioc.netlify.app',
     "https://main--mioc.netlify.app",
     'https://mioc.org.om',
-    "https://astonishing-dolphin-daa5ea.netlify.app",
 ];
 
 // else
@@ -22,6 +21,8 @@ const allowedOriginsStatic = [
     'https://mti.bankmuscat.com:6443/',
     'https://smartpaytrns.bankmuscat.com/',
     'https://spayuattrns.bmtest.om',
+    "https://astonishing-dolphin-daa5ea.netlify.app",
+
 ];
 
 app.use((req, res, next) => {
