@@ -5,7 +5,12 @@ const { v4: uuidv4 } = require('uuid');  // Use uuid to generate unique IDs
 const app = express();
 const port = 5000;
 
-app.use(cors());
+const corsOptions = {
+    origin: 'https://astonishing-dolphin-daa5ea.netlify.app',  // Allow only this origin
+    optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Mock Data
@@ -22,6 +27,9 @@ let companies = [
 // API Endpoints
 
 // Get all employees
+app.get('/', (req, res) => {
+    res.send("hello From Api");
+});
 app.get('/api/employees', (req, res) => {
     res.json(employees);
 });
